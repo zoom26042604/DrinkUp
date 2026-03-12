@@ -3,6 +3,7 @@ import 'package:dio/dio.dart';
 import '../../../../core/constants/api_constants.dart';
 import '../../../../core/errors/exceptions.dart';
 import '../models/cocktail_model.dart';
+import '../models/ingredient_model.dart';
 
 abstract interface class CocktailRemoteDatasource {
   Future<List<CocktailModel>> searchByName(String name);
@@ -16,6 +17,8 @@ abstract interface class CocktailRemoteDatasource {
   Future<List<String>> getCategories();
   Future<List<String>> getGlasses();
   Future<List<String>> getIngredientNames();
+  Future<List<IngredientModel>> searchIngredientByName(String name);
+  Future<IngredientModel> getIngredientById(String id);
 }
 
 class CocktailRemoteDatasourceImpl implements CocktailRemoteDatasource {
@@ -103,6 +106,32 @@ class CocktailRemoteDatasourceImpl implements CocktailRemoteDatasource {
 
   @override
   Future<List<String>> getIngredientNames() => _getList('i');
+
+  @override
+  Future<List<IngredientModel>> searchIngredientByName(String name) async {
+    final response = await _dio.get(
+      ApiConstants.searchEndpoint,
+      queryParameters: {'i': name},
+    );
+    final ingredients = response.data['ingredients'] as List?;
+    if (ingredients == null) throw const NotFoundException();
+    return ingredients
+        .map((e) => IngredientModel.fromJson(e as Map<String, dynamic>))
+        .toList();
+  }
+
+  @override
+  Future<IngredientModel> getIngredientById(String id) async {
+    final response = await _dio.get(
+      ApiConstants.lookupEndpoint,
+      queryParameters: {'iid': id},
+    );
+    final ingredients = response.data['ingredients'] as List?;
+    if (ingredients == null || ingredients.isEmpty) {
+      throw const NotFoundException();
+    }
+    return IngredientModel.fromJson(ingredients.first as Map<String, dynamic>);
+  }
 
   Future<List<String>> _getList(String param) async {
     final response = await _dio.get(

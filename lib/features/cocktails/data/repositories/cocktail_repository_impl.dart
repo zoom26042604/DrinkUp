@@ -4,6 +4,7 @@ import '../../../../core/errors/exceptions.dart';
 import '../../../../core/errors/failures.dart';
 import '../../../../core/network/api_result.dart';
 import '../../domain/entities/cocktail.dart';
+import '../../domain/entities/ingredient_detail.dart';
 import '../../domain/repositories/cocktail_repository.dart';
 import '../datasources/cocktail_local_datasource.dart';
 import '../datasources/cocktail_remote_datasource.dart';
@@ -58,6 +59,34 @@ class CocktailRepositoryImpl implements CocktailRepository {
   @override
   Future<ApiResult<List<String>>> getIngredientNames() =>
       _remoteStringListCall(() => _remote.getIngredientNames());
+
+  @override
+  Future<ApiResult<List<IngredientDetail>>> searchIngredientByName(
+    String name,
+  ) async {
+    try {
+      return ApiSuccess(await _remote.searchIngredientByName(name));
+    } on NotFoundException {
+      return const ApiError(NotFoundFailure());
+    } on DioException catch (e) {
+      return ApiError(_dioFailure(e));
+    } on ServerException catch (e) {
+      return ApiError(ServerFailure(e.message));
+    }
+  }
+
+  @override
+  Future<ApiResult<IngredientDetail>> getIngredientById(String id) async {
+    try {
+      return ApiSuccess(await _remote.getIngredientById(id));
+    } on NotFoundException {
+      return const ApiError(NotFoundFailure());
+    } on DioException catch (e) {
+      return ApiError(_dioFailure(e));
+    } on ServerException catch (e) {
+      return ApiError(ServerFailure(e.message));
+    }
+  }
 
   @override
   Future<ApiResult<List<Cocktail>>> getFavorites() async {

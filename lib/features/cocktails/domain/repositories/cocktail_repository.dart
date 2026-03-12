@@ -1,5 +1,6 @@
 import '../../../../core/network/api_result.dart';
 import '../entities/cocktail.dart';
+import '../entities/ingredient_detail.dart';
 
 abstract interface class CocktailRepository {
   Future<ApiResult<List<Cocktail>>> searchByName(String name);
@@ -13,6 +14,8 @@ abstract interface class CocktailRepository {
   Future<ApiResult<List<String>>> getCategories();
   Future<ApiResult<List<String>>> getGlasses();
   Future<ApiResult<List<String>>> getIngredientNames();
+  Future<ApiResult<List<IngredientDetail>>> searchIngredientByName(String name);
+  Future<ApiResult<IngredientDetail>> getIngredientById(String id);
   Future<ApiResult<List<Cocktail>>> getFavorites();
   Future<ApiResult<bool>> toggleFavorite(Cocktail cocktail);
 }
