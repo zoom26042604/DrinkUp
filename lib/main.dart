@@ -1,11 +1,15 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'screens/home_screen.dart';
 import 'screens/fav_screen.dart';
 import 'screens/games_screen.dart';
 import 'screens/profile_screen.dart';
 import 'widgets/bottom_nav_bar.dart';
+import 'providers/nav_provider.dart';
 
-void main() => runApp(MyApp());
+void main() => runApp(
+  ProviderScope(child: MyApp()),
+);
 
 class MyApp extends StatelessWidget {
   @override
@@ -13,37 +17,30 @@ class MyApp extends StatelessWidget {
     return MaterialApp(
       title: 'DrinkUp',
       debugShowCheckedModeBanner: false,
-      theme: ThemeData(
-          fontFamily: 'CuteDino',
-        ),
+      theme: ThemeData(fontFamily: 'CuteDino'),
       home: RootScreen(),
     );
   }
 }
 
-class RootScreen extends StatefulWidget {
+class RootScreen extends ConsumerWidget {
   @override
-  _RootScreenState createState() => _RootScreenState();
-}
+  Widget build(BuildContext context, WidgetRef ref) {
+    final List<Widget> screens = [
+      HomeScreen(),
+      FavScreen(),
+      GamesScreen(),
+      ProfileScreen(),
+    ];
 
-class _RootScreenState extends State<RootScreen> {
-  int _currentIndex = 0;
+    final currentIndex = ref.watch(navIndexProvider);
 
-  final List<Widget> _screens = [
-    HomeScreen(),
-    FavScreen(),
-    GamesScreen(),
-    ProfileScreen(),
-  ];
-
-  @override
-  Widget build(BuildContext context) {
     return Scaffold(
       extendBody: true,
-      body: _screens[_currentIndex],
+      body: screens[currentIndex],
       bottomNavigationBar: BottomNavBar(
-        currentIndex: _currentIndex,
-        onTap: (i) => setState(() => _currentIndex = i),
+        currentIndex: currentIndex,
+        onTap: (i) => ref.read(navIndexProvider.notifier).state = i,
       ),
     );
   }
