@@ -1,5 +1,13 @@
-// Définition des exceptions personnalisées de l'application
-// - ServerException : erreur côté API (500, timeout, pas de réseau)
-// - NotFoundException : ressource introuvable (API retourne null)
-// - CacheException : erreur de lecture/écriture du stockage local
-// - NetworkException : pas de connexion internet
+class ServerException implements Exception {
+  final String message;
+  const ServerException([this.message = 'An error occurred on the server.']);
+}
+
+class NotFoundException implements Exception {
+  const NotFoundException();
+}
+
+class CacheException implements Exception {
+  final String message;
+  const CacheException([this.message = 'Cache error.']);
+}

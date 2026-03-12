@@ -1,5 +1,10 @@
-// UseCase : récupération d'un cocktail aléatoire
-// - Aucun paramètre
-// - Appelle cocktailRepository.getRandom()
-// - Retourne ApiResult<Cocktail>
-// - Utilisé sur l'écran d'accueil pour la fonctionnalité "surprise me"
+import '../../../../core/network/api_result.dart';
+import '../entities/cocktail.dart';
+import '../repositories/cocktail_repository.dart';
+
+class GetRandomCocktail {
+  final CocktailRepository _repository;
+  const GetRandomCocktail(this._repository);
+
+  Future<ApiResult<Cocktail>> call() => _repository.getRandom();
+}

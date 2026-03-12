@@ -1,6 +1,3 @@
 {
-  "_comment": "Fixture simulant une réponse vide de TheCocktailDB (aucun résultat)",
-  "_usage": "Utilisé pour tester le cas NotFoundException dans le datasource",
-  "_note": "TheCocktailDB retourne drinks: null au lieu d'un 404",
   "drinks": null
 }
