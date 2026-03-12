@@ -28,7 +28,12 @@ class HomeScreen extends StatelessWidget {
             alignment: Alignment.center,
             child: Text(
               'Prêt à relever le défi ?',
-              style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold, color: AppColors.noir),
+              style: TextStyle(
+                fontSize: 18,
+                fontWeight: FontWeight.bold,
+                color: AppColors.noir,
+                fontFamily: 'CuteDinos',
+              ),
             ),
           ),
 

@@ -13,6 +13,9 @@ class MyApp extends StatelessWidget {
     return MaterialApp(
       title: 'DrinkUp',
       debugShowCheckedModeBanner: false,
+      theme: ThemeData(
+          fontFamily: 'CuteDino',
+        ),
       home: RootScreen(),
     );
   }
