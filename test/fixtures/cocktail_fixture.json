@@ -1,0 +1,22 @@
+{
+  "_comment": "Fixture JSON simulant une réponse de TheCocktailDB pour les tests",
+  "_usage": "Chargé dans les tests datasource pour éviter les vrais appels réseau",
+  "_example_endpoint": "https://www.thecocktaildb.com/api/json/v1/1/search.php?s=margarita",
+  "drinks": [
+    {
+      "idDrink": "11007",
+      "strDrink": "Margarita",
+      "strCategory": "Ordinary Drink",
+      "strAlcoholic": "Alcoholic",
+      "strGlass": "Cocktail glass",
+      "strInstructions": "Rub the rim of the glass with the lime slice...",
+      "strDrinkThumb": "https://www.thecocktaildb.com/images/media/drink/5noda61589575158.jpg",
+      "strIngredient1": "Tequila",
+      "strIngredient2": "Triple sec",
+      "strIngredient3": "Lime juice",
+      "strMeasure1": "1 1/2 oz",
+      "strMeasure2": "1/2 oz",
+      "strMeasure3": "1 oz"
+    }
+  ]
+}
