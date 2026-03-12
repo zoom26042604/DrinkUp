@@ -21,6 +21,8 @@ void main() {
   late MockCocktailRepository mockRepository;
   late ToggleFavorite usecase;
 
+  setUpAll(() => registerFallbackValue(tCocktail));
+
   setUp(() {
     mockRepository = MockCocktailRepository();
     usecase = ToggleFavorite(mockRepository);

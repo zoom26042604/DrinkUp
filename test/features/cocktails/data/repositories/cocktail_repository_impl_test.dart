@@ -27,6 +27,8 @@ void main() {
   late MockLocal mockLocal;
   late CocktailRepositoryImpl repository;
 
+  setUpAll(() => registerFallbackValue(tCocktailModel));
+
   setUp(() {
     mockRemote = MockRemote();
     mockLocal = MockLocal();
