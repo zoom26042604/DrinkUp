@@ -3,17 +3,10 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import '../network/dio_client.dart';
-import '../../features/cocktails/data/datasources/cocktail_local_datasource.dart';
-import '../../features/cocktails/data/datasources/cocktail_remote_datasource.dart';
-import '../../features/cocktails/data/repositories/cocktail_repository_impl.dart';
+import '../../features/cocktails/data/datasources/datasources.dart';
+import '../../features/cocktails/data/repositories/repositories.dart';
 import '../../features/cocktails/domain/repositories/cocktail_repository.dart';
-import '../../features/cocktails/domain/usecases/filter_cocktails.dart';
-import '../../features/cocktails/domain/usecases/get_categories.dart';
-import '../../features/cocktails/domain/usecases/get_cocktail_detail.dart';
-import '../../features/cocktails/domain/usecases/get_favorites.dart';
-import '../../features/cocktails/domain/usecases/get_random_cocktail.dart';
-import '../../features/cocktails/domain/usecases/search_cocktails.dart';
-import '../../features/cocktails/domain/usecases/toggle_favorite.dart';
+import '../../features/cocktails/domain/usecases/usecases.dart';
 
 final sharedPreferencesProvider = Provider<SharedPreferences>((ref) {
   throw UnimplementedError();
