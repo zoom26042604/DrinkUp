@@ -1,0 +1,14 @@
+{
+  "drinks": [
+    {
+      "strDrink": "Margarita",
+      "strDrinkThumb": "https://www.thecocktaildb.com/images/media/drink/5noda61589575158.jpg",
+      "idDrink": "11007"
+    },
+    {
+      "strDrink": "Margarita víbora",
+      "strDrinkThumb": "https://www.thecocktaildb.com/images/media/drink/qtvvyq1439905913.jpg",
+      "idDrink": "13060"
+    }
+  ]
+}
