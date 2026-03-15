@@ -1,4 +1,11 @@
-// Entité métier Ingredient (couche domain)
-// - Champs : name, measure (quantité), imageUrl
-// - Classe immuable
-// - Utilisée à l'intérieur de l'entité Cocktail
+class Ingredient {
+  final String name;
+  final String? measure;
+  final String imageSmallUrl;
+
+  const Ingredient({
+    required this.name,
+    this.measure,
+    required this.imageSmallUrl,
+  });
+}
