@@ -2,8 +2,8 @@ import 'package:flutter/material.dart';
 import '../../../../../constants/colors.dart';
 import '../widgets/speech_bubble.dart';
 
-class HomeScreen extends StatelessWidget {
-  const HomeScreen({super.key});
+class GamesScreen extends StatelessWidget {
+  const GamesScreen({super.key});
 
   static const _games = [
     'Deviner Alcool',
@@ -25,27 +25,14 @@ class HomeScreen extends StatelessWidget {
       child: SafeArea(
         child: Column(
           children: [
-            const SizedBox(height: 8),
-            const Text(
-              'Prêt à relever le défi ?',
-              style: TextStyle(
-                fontSize: 18,
-                fontWeight: FontWeight.bold,
-                color: AppColors.noir,
-              ),
+            Padding(
+              padding: const EdgeInsets.symmetric(vertical: 8),
+              child: SpeechBubble(text: 'Voici une partie des jeux !'),
             ),
             Expanded(
               child: Stack(
                 clipBehavior: Clip.none,
                 children: [
-                  Positioned(
-                    top: 55,
-                    left: 16,
-                    right: 20,
-                    child: SpeechBubble(
-                      text: 'Voici une partie des jeux, passe voir les autres !',
-                    ),
-                  ),
                   Positioned(
                     bottom: -150,
                     right: -160,
@@ -62,7 +49,7 @@ class HomeScreen extends StatelessWidget {
               ),
             ),
             Padding(
-              padding: const EdgeInsets.fromLTRB(20, 20, 20, 80),
+              padding: const EdgeInsets.fromLTRB(20, 0, 20, 100),
               child: GridView.builder(
                 shrinkWrap: true,
                 physics: const NeverScrollableScrollPhysics(),
