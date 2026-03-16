@@ -1,15 +1,15 @@
 import 'package:flutter/material.dart';
-import '../../../../../constants/colors.dart';
+import '../../../../core/constants/colors.dart';
 import '../widgets/speech_bubble.dart';
 
 class GamesScreen extends StatelessWidget {
   const GamesScreen({super.key});
 
   static const _games = [
-    'Deviner Alcool',
-    'Deviner Cocktail',
-    'Ingrédients ?',
-    'Memory',
+    'Guess my demon liquid ?',
+    'Guess my cocktail !',
+    'What is in my cocktail ?',
+    'Is your memory wasted ?',
   ];
 
   @override
@@ -25,16 +25,30 @@ class GamesScreen extends StatelessWidget {
       child: SafeArea(
         child: Column(
           children: [
-            Padding(
-              padding: const EdgeInsets.symmetric(vertical: 8),
-              child: SpeechBubble(text: 'Voici une partie des jeux !'),
+            const SizedBox(height: 80),
+            const SizedBox(height: 8),
+            const Text(
+              'Ready to be an alcoholic ?',
+              style: TextStyle(
+                fontSize: 24,
+                fontWeight: FontWeight.bold,
+                color: AppColors.noir,
+              ),
             ),
             Expanded(
               child: Stack(
                 clipBehavior: Clip.none,
                 children: [
                   Positioned(
-                    bottom: -150,
+                    top: 85,
+                    left: 16,
+                    right: 20,
+                    child: SpeechBubble(
+                      text: 'Here is a part of the game, go see the others !',
+                    ),
+                  ),
+                  Positioned(
+                    bottom: -170,
                     right: -160,
                     child: Image.asset(
                       'assets/images/mascotte1.png',
@@ -42,14 +56,14 @@ class GamesScreen extends StatelessWidget {
                       height: 450,
                       fit: BoxFit.contain,
                       errorBuilder: (_, _, _) =>
-                          const Text('🍹', style: TextStyle(fontSize: 40)),
+                      const Text('🍹', style: TextStyle(fontSize: 40)),
                     ),
                   ),
                 ],
               ),
             ),
             Padding(
-              padding: const EdgeInsets.fromLTRB(20, 0, 20, 100),
+              padding: const EdgeInsets.fromLTRB(20, 20, 20, 10),
               child: GridView.builder(
                 shrinkWrap: true,
                 physics: const NeverScrollableScrollPhysics(),
