@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import '../../../../core/constants/colors.dart';
 import '../widgets/speech_bubble.dart';
+import 'guess_demon_liquid_screen.dart';
 
 class GamesScreen extends StatelessWidget {
   const GamesScreen({super.key});
@@ -11,6 +12,26 @@ class GamesScreen extends StatelessWidget {
     'What is in my cocktail ?',
     'Is your memory wasted ?',
   ];
+
+  void _onGameTap(BuildContext context, int index) {
+    switch (index) {
+      case 0:
+        Navigator.push(
+          context,
+          MaterialPageRoute(
+            builder: (_) => const GuessDemonLiquidScreen(),
+          ),
+        );
+        break;
+      default:
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(
+            content: Text('Coming soon ! 🍹'),
+            duration: Duration(seconds: 1),
+          ),
+        );
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -55,7 +76,7 @@ class GamesScreen extends StatelessWidget {
                       width: 450,
                       height: 450,
                       fit: BoxFit.contain,
-                      errorBuilder: (_, _, _) =>
+                      errorBuilder: (_, __, ___) =>
                       const Text('🍹', style: TextStyle(fontSize: 40)),
                     ),
                   ),
@@ -74,24 +95,27 @@ class GamesScreen extends StatelessWidget {
                   mainAxisSpacing: 16,
                 ),
                 itemCount: _games.length,
-                itemBuilder: (_, i) => Container(
-                  decoration: BoxDecoration(
-                    color: AppColors.beige,
-                    borderRadius: BorderRadius.circular(18),
-                    border: Border.all(color: AppColors.rose, width: 3),
-                    boxShadow: const [
-                      BoxShadow(color: Colors.black12, blurRadius: 8),
-                    ],
-                  ),
-                  child: Center(
-                    child: Text(
-                      _games[i],
-                      style: const TextStyle(
-                        fontSize: 15,
-                        fontWeight: FontWeight.bold,
-                        color: AppColors.noir,
+                itemBuilder: (_, i) => GestureDetector(
+                  onTap: () => _onGameTap(context, i),
+                  child: Container(
+                    decoration: BoxDecoration(
+                      color: AppColors.beige,
+                      borderRadius: BorderRadius.circular(18),
+                      border: Border.all(color: AppColors.rose, width: 3),
+                      boxShadow: const [
+                        BoxShadow(color: Colors.black12, blurRadius: 8),
+                      ],
+                    ),
+                    child: Center(
+                      child: Text(
+                        _games[i],
+                        style: const TextStyle(
+                          fontSize: 15,
+                          fontWeight: FontWeight.bold,
+                          color: AppColors.noir,
+                        ),
+                        textAlign: TextAlign.center,
                       ),
-                      textAlign: TextAlign.center,
                     ),
                   ),
                 ),
