@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../../../core/constants/colors.dart';
-import '../widgets/speech_bubble.dart';
 import '../widgets/bottom_nav_bar.dart';
 import '../providers/nav_provider.dart';
 
