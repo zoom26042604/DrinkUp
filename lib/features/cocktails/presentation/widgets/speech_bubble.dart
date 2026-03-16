@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import '../../../../../constants/colors.dart';
+import '../../../../core/constants/colors.dart';
 import 'bubble_painter.dart';
 
 class SpeechBubble extends StatelessWidget {

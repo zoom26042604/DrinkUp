@@ -1,13 +1,15 @@
 import 'package:flutter/material.dart';
-import '../../../../../constants/colors.dart';
+import '../../../../core/constants/colors.dart';
 import '../widgets/speech_bubble.dart';
 
 class FavScreen extends StatelessWidget {
   const FavScreen({super.key});
 
   static const _favGames = [
-    {'titre': 'Shot Roulette', 'desc': 'Le classique des soirées !'},
-    {'titre': 'Je n\'ai jamais', 'desc': 'Révèle tes secrets'},
+    {'titre': 'Pyramid', 'desc': 'Where friendships are thrown out of the window!'},
+    {'titre': 'Never have I ever', 'desc': 'Reveal your secrets, or drink to get out of it'},
+    {'titre': 'Flip Cup', 'desc': 'Team up and flip your way to victory!'},
+    {'titre': 'Kings', 'desc': 'The ultimate card game of chaos and fun!'},
   ];
 
   @override
@@ -23,13 +25,18 @@ class FavScreen extends StatelessWidget {
       child: SafeArea(
         child: Column(
           children: [
+            const SizedBox(height: 60),
             const SizedBox(height: 8),
-            const Text(
-              'Les coups de cœur de l\'équipe !',
-              style: TextStyle(
-                fontSize: 18,
-                fontWeight: FontWeight.bold,
-                color: AppColors.noir,
+            const Padding(
+              padding: EdgeInsets.symmetric(horizontal: 16),
+              child: Text(
+                'Here is our top picks for the best drinking games to spice up your nights!',
+                textAlign: TextAlign.center,
+                style: TextStyle(
+                  fontSize: 24,
+                  fontWeight: FontWeight.bold,
+                  color: AppColors.noir,
+                ),
               ),
             ),
             Expanded(
@@ -37,25 +44,25 @@ class FavScreen extends StatelessWidget {
                 clipBehavior: Clip.none,
                 children: [
                   Positioned(
-                    top: 55,
-                    left: 16,
-                    right: 20,
+                    top: 20,
+                    left: 24,
+                    right: 24,
                     child: SpeechBubble(
-                      text: 'Nos jeux préférés, rien que pour toi !',
+                      text: 'Our favorite games, only for you!',
                     ),
                   ),
                   Positioned(
-                    bottom: -50,
-                    right: -100,
+                    bottom: -270,
+                    right: -60,
                     child: Transform.scale(
                       scaleX: -1,
                       child: Image.asset(
                         'assets/images/bluemascotte.png',
-                        width: 300,
-                        height: 300,
+                        width: 280,
+                        height: 280,
                         fit: BoxFit.contain,
-                        errorBuilder: (_, _, _) =>
-                            const Text('🍹', style: TextStyle(fontSize: 40)),
+                        errorBuilder: (_, __, ___) =>
+                        const Text('🍹', style: TextStyle(fontSize: 40)),
                       ),
                     ),
                   ),
@@ -63,49 +70,52 @@ class FavScreen extends StatelessWidget {
               ),
             ),
             Padding(
-              padding: const EdgeInsets.fromLTRB(20, 20, 20, 80),
-              child: Column(
-                children: _favGames
-                    .map(
-                      (game) => Container(
-                        width: double.infinity,
-                        margin: const EdgeInsets.only(bottom: 16),
-                        padding: const EdgeInsets.symmetric(
-                          horizontal: 24,
-                          vertical: 20,
-                        ),
-                        decoration: BoxDecoration(
-                          color: AppColors.beige,
-                          borderRadius: BorderRadius.circular(18),
-                          border: Border.all(color: AppColors.rose, width: 3),
-                          boxShadow: const [
-                            BoxShadow(color: Colors.black12, blurRadius: 8),
-                          ],
-                        ),
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Text(
-                              game['titre']!,
-                              style: const TextStyle(
-                                fontSize: 17,
-                                fontWeight: FontWeight.bold,
-                                color: AppColors.noir,
+              padding: const EdgeInsets.fromLTRB(10, 165, 10, 0),
+              child: ListView.separated(
+                shrinkWrap: true,
+                physics: const NeverScrollableScrollPhysics(),
+                itemCount: _favGames.length,
+                separatorBuilder: (_, __) => const SizedBox(height: 8),
+                itemBuilder: (context, i) {
+                  final game = _favGames[i];
+                  return Container(
+                    padding: const EdgeInsets.symmetric(horizontal: 18, vertical: 12),
+                    decoration: BoxDecoration(
+                      color: AppColors.beige,
+                      borderRadius: BorderRadius.circular(14),
+                      border: Border.all(color: AppColors.rose, width: 2),
+                      boxShadow: const [
+                        BoxShadow(color: Colors.black12, blurRadius: 4),
+                      ],
+                    ),
+                    child: Row(
+                      children: [
+                        Expanded(
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Text(
+                                game['titre']!,
+                                style: const TextStyle(
+                                  fontSize: 18,
+                                  fontWeight: FontWeight.bold,
+                                  color: AppColors.noir,
+                                ),
                               ),
-                            ),
-                            const SizedBox(height: 4),
-                            Text(
-                              game['desc']!,
-                              style: const TextStyle(
-                                fontSize: 13,
-                                color: AppColors.noir,
+                              const SizedBox(height: 1),
+                              Text(
+                                game['desc']!,
+                                style: const TextStyle(fontSize: 11, color: AppColors.noir),
+                                maxLines: 1,
+                                overflow: TextOverflow.ellipsis,
                               ),
-                            ),
-                          ],
+                            ],
+                          ),
                         ),
-                      ),
-                    )
-                    .toList(),
+                      ],
+                    ),
+                  );
+                },
               ),
             ),
           ],
