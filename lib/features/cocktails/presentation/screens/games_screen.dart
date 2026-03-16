@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import '../../../../core/constants/colors.dart';
 import '../widgets/speech_bubble.dart';
 import 'guess_demon_liquid_screen.dart';
+import 'guess_my_cocktail.dart';
 
 class GamesScreen extends StatelessWidget {
   const GamesScreen({super.key});
@@ -19,14 +20,22 @@ class GamesScreen extends StatelessWidget {
         Navigator.push(
           context,
           MaterialPageRoute(
-            builder: (_) => const GuessDemonLiquidScreen(),
+            builder: (_) => GuessDemonLiquidScreen(),
+          ),
+        );
+        break;
+      case 1:
+        Navigator.push(
+          context,
+          MaterialPageRoute(
+            builder: (_) => GuessMyCocktailScreen(),
           ),
         );
         break;
       default:
         ScaffoldMessenger.of(context).showSnackBar(
           const SnackBar(
-            content: Text('Coming soon ! 🍹'),
+            content: Text('Coming soon !'),
             duration: Duration(seconds: 1),
           ),
         );
