@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
-import 'constants/colors.dart';
+import 'core/constants/colors.dart';
 import 'core/providers/app_providers.dart';
 import 'features/cocktails/presentation/providers/nav_provider.dart';
 import 'features/cocktails/presentation/screens/home_screen.dart';
