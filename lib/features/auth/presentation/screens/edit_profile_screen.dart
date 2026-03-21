@@ -2,12 +2,12 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../../../core/constants/colors.dart';
+import '../../../../core/widgets/google_logo.dart';
+import '../../domain/entities/user_entity.dart';
 import '../providers/auth_providers.dart';
 
 class EditProfileScreen extends ConsumerStatefulWidget {
-  final String? currentDisplayName;
-
-  const EditProfileScreen({super.key, this.currentDisplayName});
+  const EditProfileScreen({super.key});
 
   @override
   ConsumerState<EditProfileScreen> createState() => _EditProfileScreenState();
@@ -26,8 +26,9 @@ class _EditProfileScreenState extends ConsumerState<EditProfileScreen> {
   @override
   void initState() {
     super.initState();
+    final user = ref.read(authStateProvider).valueOrNull;
     _usernameController =
-        TextEditingController(text: widget.currentDisplayName ?? '');
+        TextEditingController(text: user?.displayName ?? '');
   }
 
   @override
@@ -72,9 +73,88 @@ class _EditProfileScreenState extends ConsumerState<EditProfileScreen> {
     }
   }
 
+  Future<void> _confirmSignOut() async {
+    final confirmed = await showDialog<bool>(
+      context: context,
+      builder: (ctx) => AlertDialog(
+        backgroundColor: AppColors.beige,
+        shape:
+            RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
+        title: const Text('Sign Out',
+            style: TextStyle(color: AppColors.noir)),
+        content: const Text('Are you sure you want to sign out?',
+            style: TextStyle(color: AppColors.noir)),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.of(ctx).pop(false),
+            child: const Text('Cancel',
+                style: TextStyle(color: AppColors.noir)),
+          ),
+          ElevatedButton(
+            onPressed: () => Navigator.of(ctx).pop(true),
+            style: ElevatedButton.styleFrom(
+              backgroundColor: AppColors.rose,
+              foregroundColor: AppColors.white,
+              side: const BorderSide(color: AppColors.noir, width: 1.5),
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(12),
+              ),
+              elevation: 0,
+            ),
+            child: const Text('Sign Out'),
+          ),
+        ],
+      ),
+    );
+    if (confirmed == true) {
+      await ref.read(authNotifierProvider.notifier).signOut();
+      if (mounted) Navigator.of(context).popUntil((route) => route.isFirst);
+    }
+  }
+
+  Future<void> _confirmUnlinkGoogle() async {
+    final confirmed = await showDialog<bool>(
+      context: context,
+      builder: (ctx) => AlertDialog(
+        backgroundColor: AppColors.beige,
+        shape:
+            RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
+        title: const Text('Unlink Google',
+            style: TextStyle(color: AppColors.noir)),
+        content: const Text(
+            'Are you sure you want to unlink your Google account?',
+            style: TextStyle(color: AppColors.noir)),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.of(ctx).pop(false),
+            child: const Text('Cancel',
+                style: TextStyle(color: AppColors.noir)),
+          ),
+          ElevatedButton(
+            onPressed: () => Navigator.of(ctx).pop(true),
+            style: ElevatedButton.styleFrom(
+              backgroundColor: AppColors.rose,
+              foregroundColor: AppColors.white,
+              side: const BorderSide(color: AppColors.noir, width: 1.5),
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(12),
+              ),
+              elevation: 0,
+            ),
+            child: const Text('Unlink'),
+          ),
+        ],
+      ),
+    );
+    if (confirmed == true) {
+      await ref.read(authNotifierProvider.notifier).unlinkGoogle();
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     final authState = ref.watch(authNotifierProvider);
+    final user = ref.watch(authStateProvider).valueOrNull;
 
     return Container(
       decoration: const BoxDecoration(
@@ -94,7 +174,7 @@ class _EditProfileScreenState extends ConsumerState<EditProfileScreen> {
             onPressed: () => Navigator.of(context).pop(),
           ),
           title: const Text(
-            'Edit Profile',
+            'Settings',
             style: TextStyle(
               color: AppColors.noir,
               fontWeight: FontWeight.bold,
@@ -102,110 +182,52 @@ class _EditProfileScreenState extends ConsumerState<EditProfileScreen> {
           ),
         ),
         body: SingleChildScrollView(
-          padding: const EdgeInsets.symmetric(horizontal: 24),
+          padding: const EdgeInsets.fromLTRB(24, 8, 24, 40),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
-              const SizedBox(height: 16),
-              Container(
-                padding: const EdgeInsets.all(20),
-                decoration: BoxDecoration(
-                  color: AppColors.beige.withValues(alpha: 0.6),
-                  borderRadius: BorderRadius.circular(20),
-                ),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    const Text(
-                      'Username',
-                      style: TextStyle(
-                        fontSize: 16,
-                        fontWeight: FontWeight.bold,
+              _SectionCard(
+                children: [
+                  const _SectionTitle('Username'),
+                  const SizedBox(height: 12),
+                  TextField(
+                    controller: _usernameController,
+                    style: const TextStyle(color: AppColors.noir),
+                    decoration: _fieldDecoration('Username'),
+                  ),
+                  if (authState.error != null) ...[
+                    const SizedBox(height: 10),
+                    Text(
+                      authState.error!,
+                      style: const TextStyle(
                         color: AppColors.noir,
-                      ),
-                    ),
-                    const SizedBox(height: 12),
-                    TextField(
-                      controller: _usernameController,
-                      style: const TextStyle(color: AppColors.noir),
-                      decoration: _fieldDecoration('Username'),
-                    ),
-                    const SizedBox(height: 16),
-                    if (authState.error != null)
-                      Padding(
-                        padding: const EdgeInsets.only(bottom: 12),
-                        child: Text(
-                          authState.error!,
-                          style: const TextStyle(
-                            color: AppColors.noir,
-                            fontWeight: FontWeight.w600,
-                          ),
-                        ),
-                      ),
-                    SizedBox(
-                      width: double.infinity,
-                      height: 48,
-                      child: ElevatedButton(
-                        onPressed: authState.isLoading ? null : _saveUsername,
-                        style: ElevatedButton.styleFrom(
-                          backgroundColor: AppColors.rose,
-                          foregroundColor: AppColors.white,
-                          elevation: 0,
-                          side: const BorderSide(color: AppColors.noir, width: 1.5),
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(14),
-                          ),
-                        ),
-                        child: authState.isLoading
-                            ? const SizedBox(
-                                height: 18,
-                                width: 18,
-                                child: CircularProgressIndicator(
-                                  color: AppColors.white,
-                                  strokeWidth: 2,
-                                ),
-                              )
-                            : const Text(
-                                'Save username',
-                                style: TextStyle(fontWeight: FontWeight.bold),
-                              ),
+                        fontWeight: FontWeight.w600,
                       ),
                     ),
                   ],
-                ),
+                  const SizedBox(height: 16),
+                  _ActionButton(
+                    label: 'Save username',
+                    isLoading: authState.isLoading,
+                    onPressed: _saveUsername,
+                  ),
+                ],
               ),
               const SizedBox(height: 16),
-              Container(
-                padding: const EdgeInsets.all(20),
-                decoration: BoxDecoration(
-                  color: AppColors.beige.withValues(alpha: 0.6),
-                  borderRadius: BorderRadius.circular(20),
-                ),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
+              if (user?.hasPasswordProvider == true)
+                _SectionCard(
                   children: [
-                    const Text(
-                      'Change Password',
-                      style: TextStyle(
-                        fontSize: 16,
-                        fontWeight: FontWeight.bold,
-                        color: AppColors.noir,
-                      ),
-                    ),
+                    const _SectionTitle('Change Password'),
                     const SizedBox(height: 12),
                     TextField(
                       controller: _currentPasswordController,
                       obscureText: _obscureCurrent,
                       style: const TextStyle(color: AppColors.noir),
-                      decoration: _fieldDecoration('Current password').copyWith(
-                        suffixIcon: IconButton(
-                          icon: Icon(
-                            _obscureCurrent
-                                ? Icons.visibility_off
-                                : Icons.visibility,
-                            color: AppColors.rose,
-                          ),
-                          onPressed: () => setState(
+                      decoration:
+                          _fieldDecoration('Current password').copyWith(
+                        suffixIcon: _EyeButton(
+                          obscure: _obscureCurrent,
+                          onTap: () => setState(
                               () => _obscureCurrent = !_obscureCurrent),
                         ),
                       ),
@@ -216,14 +238,9 @@ class _EditProfileScreenState extends ConsumerState<EditProfileScreen> {
                       obscureText: _obscureNew,
                       style: const TextStyle(color: AppColors.noir),
                       decoration: _fieldDecoration('New password').copyWith(
-                        suffixIcon: IconButton(
-                          icon: Icon(
-                            _obscureNew
-                                ? Icons.visibility_off
-                                : Icons.visibility,
-                            color: AppColors.rose,
-                          ),
-                          onPressed: () =>
+                        suffixIcon: _EyeButton(
+                          obscure: _obscureNew,
+                          onTap: () =>
                               setState(() => _obscureNew = !_obscureNew),
                         ),
                       ),
@@ -235,32 +252,64 @@ class _EditProfileScreenState extends ConsumerState<EditProfileScreen> {
                       style: const TextStyle(color: AppColors.noir),
                       decoration:
                           _fieldDecoration('Confirm new password').copyWith(
-                        suffixIcon: IconButton(
-                          icon: Icon(
-                            _obscureConfirm
-                                ? Icons.visibility_off
-                                : Icons.visibility,
-                            color: AppColors.rose,
-                          ),
-                          onPressed: () => setState(
+                        suffixIcon: _EyeButton(
+                          obscure: _obscureConfirm,
+                          onTap: () => setState(
                               () => _obscureConfirm = !_obscureConfirm),
                         ),
                       ),
                     ),
                     const SizedBox(height: 16),
+                    _ActionButton(
+                      label: 'Change password',
+                      isLoading: authState.isLoading,
+                      onPressed: _changePassword,
+                    ),
+                  ],
+                ),
+              if (user?.hasPasswordProvider == true) const SizedBox(height: 16),
+              _SectionCard(
+                children: [
+                  const _SectionTitle('Connected Accounts'),
+                  const SizedBox(height: 16),
+                  if (user?.isGoogleLinked == true)
+                    Row(
+                      children: [
+                        const GoogleLogo(size: 26),
+                        const SizedBox(width: 10),
+                        const Expanded(
+                          child: Text(
+                            'Google account linked',
+                            style: TextStyle(
+                                fontSize: 14, color: AppColors.noir),
+                          ),
+                        ),
+                        IconButton(
+                          padding: EdgeInsets.zero,
+                          constraints: const BoxConstraints(),
+                          icon: const Icon(Icons.link_off_rounded,
+                              color: AppColors.rose, size: 20),
+                          onPressed: _confirmUnlinkGoogle,
+                        ),
+                      ],
+                    )
+                  else
                     SizedBox(
                       width: double.infinity,
-                      height: 48,
-                      child: ElevatedButton(
-                        onPressed:
-                            authState.isLoading ? null : _changePassword,
-                        style: ElevatedButton.styleFrom(
-                          backgroundColor: AppColors.rose,
-                          foregroundColor: AppColors.white,
-                          elevation: 0,
-                          side: const BorderSide(color: AppColors.noir, width: 1.5),
+                      height: 44,
+                      child: OutlinedButton(
+                        onPressed: authState.isLoading
+                            ? null
+                            : () => ref
+                                .read(authNotifierProvider.notifier)
+                                .linkWithGoogle(),
+                        style: OutlinedButton.styleFrom(
+                          backgroundColor: AppColors.beige,
+                          foregroundColor: AppColors.noir,
+                          side: const BorderSide(
+                              color: AppColors.rose, width: 1.5),
                           shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(14),
+                            borderRadius: BorderRadius.circular(12),
                           ),
                         ),
                         child: authState.isLoading
@@ -268,24 +317,143 @@ class _EditProfileScreenState extends ConsumerState<EditProfileScreen> {
                                 height: 18,
                                 width: 18,
                                 child: CircularProgressIndicator(
-                                  color: AppColors.white,
+                                  color: AppColors.noir,
                                   strokeWidth: 2,
                                 ),
                               )
-                            : const Text(
-                                'Change password',
-                                style: TextStyle(fontWeight: FontWeight.bold),
+                            : Row(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                children: const [
+                                  GoogleLogo(size: 20),
+                                  SizedBox(width: 8),
+                                  Text('Link Google account'),
+                                ],
                               ),
                       ),
                     ),
-                  ],
-                ),
+                ],
               ),
               const SizedBox(height: 32),
+              SizedBox(
+                width: double.infinity,
+                height: 52,
+                child: OutlinedButton.icon(
+                  onPressed: _confirmSignOut,
+                  icon: const Icon(Icons.logout_rounded,
+                      color: AppColors.noir),
+                  label: const Text(
+                    'Sign Out',
+                    style: TextStyle(fontSize: 16, color: AppColors.noir),
+                  ),
+                  style: OutlinedButton.styleFrom(
+                    backgroundColor: AppColors.beige,
+                    side: const BorderSide(
+                        color: AppColors.rose, width: 1.5),
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(16),
+                    ),
+                  ),
+                ),
+              ),
             ],
           ),
         ),
       ),
+    );
+  }
+}
+
+class _SectionCard extends StatelessWidget {
+  final List<Widget> children;
+  const _SectionCard({required this.children});
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      padding: const EdgeInsets.all(20),
+      decoration: BoxDecoration(
+        color: AppColors.beige.withValues(alpha: 0.6),
+        borderRadius: BorderRadius.circular(20),
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: children,
+      ),
+    );
+  }
+}
+
+class _SectionTitle extends StatelessWidget {
+  final String text;
+  const _SectionTitle(this.text);
+
+  @override
+  Widget build(BuildContext context) {
+    return Text(
+      text,
+      style: const TextStyle(
+        fontSize: 16,
+        fontWeight: FontWeight.bold,
+        color: AppColors.noir,
+      ),
+    );
+  }
+}
+
+class _ActionButton extends StatelessWidget {
+  final String label;
+  final bool isLoading;
+  final VoidCallback onPressed;
+  const _ActionButton(
+      {required this.label,
+      required this.isLoading,
+      required this.onPressed});
+
+  @override
+  Widget build(BuildContext context) {
+    return SizedBox(
+      width: double.infinity,
+      height: 48,
+      child: ElevatedButton(
+        onPressed: isLoading ? null : onPressed,
+        style: ElevatedButton.styleFrom(
+          backgroundColor: AppColors.rose,
+          foregroundColor: AppColors.white,
+          elevation: 0,
+          side: const BorderSide(color: AppColors.noir, width: 1.5),
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(14),
+          ),
+        ),
+        child: isLoading
+            ? const SizedBox(
+                height: 18,
+                width: 18,
+                child: CircularProgressIndicator(
+                  color: AppColors.white,
+                  strokeWidth: 2,
+                ),
+              )
+            : Text(label,
+                style: const TextStyle(fontWeight: FontWeight.bold)),
+      ),
+    );
+  }
+}
+
+class _EyeButton extends StatelessWidget {
+  final bool obscure;
+  final VoidCallback onTap;
+  const _EyeButton({required this.obscure, required this.onTap});
+
+  @override
+  Widget build(BuildContext context) {
+    return IconButton(
+      icon: Icon(
+        obscure ? Icons.visibility_off : Icons.visibility,
+        color: AppColors.rose,
+      ),
+      onPressed: onTap,
     );
   }
 }
