@@ -3,6 +3,8 @@ import '../../../../core/constants/colors.dart';
 import '../widgets/speech_bubble.dart';
 import 'guess_demon_liquid_screen.dart';
 import 'guess_my_cocktail.dart';
+import 'is_it_in_my_cocktail.dart';
+import 'is_your_memory_wasted.dart';
 
 class GamesScreen extends StatelessWidget {
   const GamesScreen({super.key});
@@ -10,7 +12,7 @@ class GamesScreen extends StatelessWidget {
   static const _games = [
     'Guess my demon liquid ?',
     'Guess my cocktail !',
-    'What is in my cocktail ?',
+    'Is it in my cocktail ?',
     'Is your memory wasted ?',
   ];
 
@@ -29,6 +31,22 @@ class GamesScreen extends StatelessWidget {
           context,
           MaterialPageRoute(
             builder: (_) => GuessMyCocktailScreen(),
+          ),
+        );
+        break;
+      case 2:
+        Navigator.push(
+          context,
+          MaterialPageRoute(
+            builder: (_) => IsItInMyCocktailScreen(),
+          ),
+        );
+        break;
+      case 3:
+        Navigator.push(
+          context,
+          MaterialPageRoute(
+            builder: (_) => IsYourMemoryWastedScreen(),
           ),
         );
         break;
