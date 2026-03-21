@@ -22,3 +22,7 @@ final class NetworkFailure extends Failure {
 final class ValidationFailure extends Failure {
   const ValidationFailure(super.message);
 }
+
+final class AuthFailure extends Failure {
+  const AuthFailure([super.message = 'Authentication error.']);
+}
