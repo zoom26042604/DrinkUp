@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import '../../../../core/constants/colors.dart';
 import '../widgets/speech_bubble.dart';
+import 'all_games_screen.dart';
 import 'guess_demon_liquid_screen.dart';
 import 'guess_my_cocktail.dart';
 import 'is_it_in_my_cocktail.dart';
@@ -103,7 +104,7 @@ class GamesScreen extends StatelessWidget {
                       width: 450,
                       height: 450,
                       fit: BoxFit.contain,
-                      errorBuilder: (_, __, ___) =>
+                      errorBuilder: (_, _, _) =>
                       const Text('🍹', style: TextStyle(fontSize: 40)),
                     ),
                   ),
@@ -142,6 +143,34 @@ class GamesScreen extends StatelessWidget {
                           color: AppColors.noir,
                         ),
                         textAlign: TextAlign.center,
+                      ),
+                    ),
+                  ),
+                ),
+              ),
+            ),
+            Padding(
+              padding: const EdgeInsets.fromLTRB(20, 0, 20, 20),
+              child: GestureDetector(
+                onTap: () => Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (_) => const AllGamesScreen()),
+                ),
+                child: Container(
+                  width: double.infinity,
+                  padding: const EdgeInsets.symmetric(vertical: 14),
+                  decoration: BoxDecoration(
+                    color: AppColors.beige,
+                    borderRadius: BorderRadius.circular(14),
+                    border: Border.all(color: AppColors.rose, width: 2),
+                  ),
+                  child: const Center(
+                    child: Text(
+                      'See all games',
+                      style: TextStyle(
+                        fontSize: 15,
+                        fontWeight: FontWeight.bold,
+                        color: AppColors.noir,
                       ),
                     ),
                   ),
