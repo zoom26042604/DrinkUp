@@ -20,7 +20,7 @@ class BottomNavBar extends StatelessWidget {
           GestureDetector(
             onTap: () => onTap(0),
             child: Image.asset(
-              'assets/images/logo.png',
+              'assets/images/favicon.png',
               height: 80,
               errorBuilder: (_, _, _) => const Icon(
                 Icons.local_bar_rounded,
