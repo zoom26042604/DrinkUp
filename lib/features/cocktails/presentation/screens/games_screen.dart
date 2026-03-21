@@ -97,7 +97,7 @@ class GamesScreen extends StatelessWidget {
                     ),
                   ),
                   Positioned(
-                    bottom: -170,
+                    bottom: -200,
                     right: -160,
                     child: Image.asset(
                       'assets/images/mascotte1.png',
@@ -105,7 +105,7 @@ class GamesScreen extends StatelessWidget {
                       height: 450,
                       fit: BoxFit.contain,
                       errorBuilder: (_, _, _) =>
-                      const Text('🍹', style: TextStyle(fontSize: 40)),
+                      const Text('', style: TextStyle(fontSize: 40)),
                     ),
                   ),
                 ],

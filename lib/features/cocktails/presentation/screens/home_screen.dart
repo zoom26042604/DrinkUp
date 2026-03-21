@@ -42,6 +42,7 @@ class HomeScreen extends ConsumerWidget {
               child: Stack(
                 clipBehavior: Clip.none,
                 children: [
+                  // SPEECH BUBBLE
                   Positioned(
                     top: 80,
                     left: 20,
@@ -50,59 +51,68 @@ class HomeScreen extends ConsumerWidget {
                       text: '4 amazing games to play with your friends!',
                     ),
                   ),
+
                   Positioned(
-                    bottom: -290,
-                    right: -120,
-                    child: Image.asset(
-                      'assets/images/mascotte1.png',
-                      width: 380,
-                      height: 380,
-                      fit: BoxFit.contain,
-                      errorBuilder: (_, _, _) =>
-                      const Text('🍹', style: TextStyle(fontSize: 60)),
-                    ),
-                  ),
-                ],
-              ),
-            ),
-            Padding(
-              padding: const EdgeInsets.fromLTRB(24, 170, 24, 40),
-              child: Column(
-                children: [
-                  Container(
-                    width: double.infinity,
-                    padding: const EdgeInsets.symmetric(vertical: 20),
-                    decoration: BoxDecoration(
-                      color: AppColors.beige,
-                      borderRadius: BorderRadius.circular(20),
-                      border: Border.all(color: AppColors.rose, width: 2),
-                      boxShadow: const [
-                        BoxShadow(color: Colors.black26, blurRadius: 10),
-                      ],
-                    ),
-                    child: GestureDetector(
-                      onTap: () => ref.read(navIndexProvider.notifier).state = 1,
-                      child: const Center(
-                        child: Text(
-                          'START YOUR PARTY',
-                          style: TextStyle(
-                            fontSize: 18,
-                            fontWeight: FontWeight.bold,
-                            color: AppColors.noir,
-                          ),
-                        ),
+                    bottom: 90,
+                    right: -80,
+                    child: Transform(
+                      alignment: Alignment.center,
+                      transform: Matrix4.identity()..scale(-1.0, 1.0),
+                      child: Image.asset(
+                        'assets/images/redmascotte.png',
+                        width: 300,
+                        height: 300,
+                        fit: BoxFit.contain,
+                        errorBuilder: (_, __, ___) =>
+                        const Text('', style: TextStyle(fontSize: 60)),
                       ),
                     ),
                   ),
-                  const SizedBox(height: 16),
-                  const Text(
-                    'Explore Favorites and Games tabs to discover all our games!',
-                    style: TextStyle(
-                      fontSize: 14,
-                      color: AppColors.noir,
-                      fontWeight: FontWeight.w500,
+
+                  Positioned(
+                    bottom: 40,
+                    left: 24,
+                    right: 24,
+                    child: Column(
+                      children: [
+                        Container(
+                          width: double.infinity,
+                          padding: const EdgeInsets.symmetric(vertical: 20),
+                          decoration: BoxDecoration(
+                            color: AppColors.beige,
+                            borderRadius: BorderRadius.circular(20),
+                            border: Border.all(color: AppColors.rose, width: 2),
+                            boxShadow: const [
+                              BoxShadow(color: Colors.black26, blurRadius: 10),
+                            ],
+                          ),
+                          child: GestureDetector(
+                            onTap: () =>
+                            ref.read(navIndexProvider.notifier).state = 1,
+                            child: const Center(
+                              child: Text(
+                                'START YOUR PARTY',
+                                style: TextStyle(
+                                  fontSize: 18,
+                                  fontWeight: FontWeight.bold,
+                                  color: AppColors.noir,
+                                ),
+                              ),
+                            ),
+                          ),
+                        ),
+                        const SizedBox(height: 16),
+                        const Text(
+                          'Explore Favorites and Games tabs to discover all our games!',
+                          style: TextStyle(
+                            fontSize: 14,
+                            color: AppColors.noir,
+                            fontWeight: FontWeight.w500,
+                          ),
+                          textAlign: TextAlign.center,
+                        ),
+                      ],
                     ),
-                    textAlign: TextAlign.center,
                   ),
                 ],
               ),
