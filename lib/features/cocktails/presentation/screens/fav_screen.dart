@@ -113,16 +113,42 @@ class _FavScreenState extends ConsumerState<FavScreen>
               ),
             ),
             const SizedBox(height: 28),
-            _AuthButton(
-              label: 'Sign in',
-              onTap: () => Navigator.push(context,
-                  MaterialPageRoute(builder: (_) => const LoginScreen())),
+            SizedBox(
+              width: double.infinity,
+              height: 52,
+              child: ElevatedButton(
+                onPressed: () => Navigator.push(context,
+                    MaterialPageRoute(builder: (_) => const LoginScreen())),
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: AppColors.rose,
+                  foregroundColor: AppColors.white,
+                  side: const BorderSide(color: AppColors.noir, width: 1.5),
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(16),
+                  ),
+                  elevation: 0,
+                ),
+                child: const Text('Sign In', style: TextStyle(fontSize: 16)),
+              ),
             ),
             const SizedBox(height: 12),
-            _AuthButton(
-              label: 'Create an account',
-              onTap: () => Navigator.push(context,
-                  MaterialPageRoute(builder: (_) => const RegisterScreen())),
+            SizedBox(
+              width: double.infinity,
+              height: 52,
+              child: OutlinedButton(
+                onPressed: () => Navigator.push(context,
+                    MaterialPageRoute(builder: (_) => const RegisterScreen())),
+                style: OutlinedButton.styleFrom(
+                  backgroundColor: AppColors.beige,
+                  foregroundColor: AppColors.noir,
+                  side: const BorderSide(color: AppColors.rose, width: 1.5),
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(16),
+                  ),
+                ),
+                child: const Text('Create an account',
+                    style: TextStyle(fontSize: 16, color: AppColors.noir)),
+              ),
             ),
           ],
         ),
@@ -451,33 +477,3 @@ class _FavScreenState extends ConsumerState<FavScreen>
   }
 }
 
-class _AuthButton extends StatelessWidget {
-  final String label;
-  final VoidCallback onTap;
-  const _AuthButton({required this.label, required this.onTap});
-
-  @override
-  Widget build(BuildContext context) {
-    return GestureDetector(
-      onTap: onTap,
-      child: Container(
-        width: double.infinity,
-        padding: const EdgeInsets.symmetric(vertical: 14),
-        decoration: BoxDecoration(
-          color: AppColors.beige,
-          borderRadius: BorderRadius.circular(16),
-          border: Border.all(color: AppColors.rose, width: 2),
-        ),
-        child: Text(
-          label,
-          textAlign: TextAlign.center,
-          style: const TextStyle(
-            fontSize: 15,
-            fontWeight: FontWeight.bold,
-            color: AppColors.noir,
-          ),
-        ),
-      ),
-    );
-  }
-}
