@@ -71,8 +71,8 @@ class RootScreen extends ConsumerWidget {
 
   static const _screens = [
     HomeScreen(),
-    FavScreen(),
     GamesScreen(),
+    FavScreen(),
     ProfileScreen(),
   ];
 
