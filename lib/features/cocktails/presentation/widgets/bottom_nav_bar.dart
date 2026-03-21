@@ -11,22 +11,25 @@ class BottomNavBar extends StatelessWidget {
   Widget build(BuildContext context) {
     return Container(
       color: Colors.transparent,
-      padding: const EdgeInsets.symmetric(vertical: 20, horizontal: 20),
+      padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 20),
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
           _navItem('assets/images/maison.png', 0),
-          _navItem('assets/images/etoiles.png', 1),
+          _navItem('assets/images/manette.png', 1),
           GestureDetector(
             onTap: () => onTap(0),
             child: Image.asset(
               'assets/images/logo.png',
               height: 80,
-              errorBuilder: (_, _, _) =>
-                  const Text('🍹', style: TextStyle(fontSize: 32)),
+              errorBuilder: (_, _, _) => const Icon(
+                Icons.local_bar_rounded,
+                size: 40,
+                color: AppColors.noir,
+              ),
             ),
           ),
-          _navItem('assets/images/manette.png', 2),
+          _navItem('assets/images/etoiles.png', 2),
           _navItem('assets/images/user.png', 3),
         ],
       ),

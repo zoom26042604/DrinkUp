@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../../../core/constants/colors.dart';
+import '../providers/game_favorites_provider.dart';
 import '../providers/game_providers.dart';
 import '../providers/nav_provider.dart';
 import '../widgets/bottom_nav_bar.dart';
@@ -59,13 +60,28 @@ class IsYourMemoryWastedScreen extends ConsumerWidget {
             ),
             data: (s) => Column(
               children: [
-                Align(
-                  alignment: Alignment.centerLeft,
-                  child: IconButton(
-                    icon: const Icon(Icons.arrow_back_rounded,
-                        color: AppColors.noir),
-                    onPressed: () => Navigator.pop(context),
-                  ),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    IconButton(
+                      icon: const Icon(Icons.arrow_back_rounded,
+                          color: AppColors.noir),
+                      onPressed: () => Navigator.pop(context),
+                    ),
+                    IconButton(
+                      icon: Icon(
+                        ref.watch(gameFavoritesProvider).contains(3)
+                            ? Icons.star_rounded
+                            : Icons.star_border_rounded,
+                        color: ref.watch(gameFavoritesProvider).contains(3)
+                            ? AppColors.rose
+                            : AppColors.noir,
+                        size: 28,
+                      ),
+                      onPressed: () =>
+                          ref.read(gameFavoritesProvider.notifier).toggle(3),
+                    ),
+                  ],
                 ),
                 const Text(
                   'Is your memory wasted ?',
