@@ -73,7 +73,7 @@ class HomeScreen extends StatelessWidget {
                     decoration: BoxDecoration(
                       color: AppColors.beige,
                       borderRadius: BorderRadius.circular(20),
-                      border: Border.all(color: AppColors.noir, width: 2),
+                      border: Border.all(color: AppColors.rose, width: 2),
                       boxShadow: const [
                         BoxShadow(color: Colors.black26, blurRadius: 10),
                       ],
