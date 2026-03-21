@@ -1,350 +1,318 @@
-import 'dart:math';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+
 import '../../../../core/constants/colors.dart';
-import '../widgets/bottom_nav_bar.dart';
+import '../providers/game_providers.dart';
 import '../providers/nav_provider.dart';
-
-class CocktailChallenge {
-  final String nom;
-  final String image;
-  final List<String> ingredients;
-
-  const CocktailChallenge({
-    required this.nom,
-    required this.image,
-    required this.ingredients,
-  });
-}
+import '../widgets/bottom_nav_bar.dart';
+import '../widgets/game_result_card.dart';
 
 class GuessMyCocktailScreen extends ConsumerStatefulWidget {
   const GuessMyCocktailScreen({super.key});
 
   @override
-  ConsumerState<GuessMyCocktailScreen> createState() => _GuessMyCocktailScreenState();
+  ConsumerState<GuessMyCocktailScreen> createState() =>
+      _GuessMyCocktailScreenState();
 }
 
-class _GuessMyCocktailScreenState extends ConsumerState<GuessMyCocktailScreen> {
-  final TextEditingController _controller = TextEditingController();
-
-  static const List<CocktailChallenge> _cocktails = [
-    CocktailChallenge(
-      nom: 'Mojito',
-      image: 'assets/images/mojito.png',
-      ingredients: ['Menthe', 'Citron vert', 'Sucre de canne', 'Rhum blanc', 'Eau gazeuse'],
-    ),
-    CocktailChallenge(
-      nom: 'Margarita',
-      image: 'assets/images/margarita.png',
-      ingredients: ['Tequila', 'Triple sec', 'Citron vert', 'Sel'],
-    ),
-    CocktailChallenge(
-      nom: 'Piña Colada',
-      image: 'assets/images/pina_colada.png',
-      ingredients: ['Rhum blanc', 'Lait de coco', "Jus d'ananas"],
-    ),
-    CocktailChallenge(
-      nom: 'Cosmopolitan',
-      image: 'assets/images/cosmopolitan.png',
-      ingredients: ['Vodka', 'Triple sec', 'Cranberry', 'Citron vert'],
-    ),
-    CocktailChallenge(
-      nom: 'Sex on the Beach',
-      image: 'assets/images/sex_on_the_beach.png',
-      ingredients: ['Vodka', 'Peach Schnapps', "Jus d'orange", 'Jus de cranberry'],
-    ),
-  ];
-
-  late CocktailChallenge _cocktail;
-  int _revealedCount = 1;
-  bool _gameOver = false;
-  bool _won = false;
-
-  @override
-  void initState() {
-    super.initState();
-    _pickRandom();
-  }
-
-  void _pickRandom() {
-    _cocktail = _cocktails[Random().nextInt(_cocktails.length)];
-  }
+class _GuessMyCocktailScreenState
+    extends ConsumerState<GuessMyCocktailScreen> {
+  TextEditingController? _fieldController;
 
   void _onValidate() {
-    final answer = _controller.text.trim().toLowerCase();
-    if (answer.isEmpty) return;
-
-    if (answer == _cocktail.nom.toLowerCase()) {
-      setState(() {
-        _won = true;
-        _gameOver = true;
-      });
-    } else if (_revealedCount < _cocktail.ingredients.length) {
-      setState(() => _revealedCount++);
-      _controller.clear();
-    } else {
-      setState(() => _gameOver = true);
-    }
-  }
-
-  void _onRestart() {
-    setState(() {
-      _pickRandom();
-      _revealedCount = 1;
-      _gameOver = false;
-      _won = false;
-      _controller.clear();
-    });
-  }
-
-  int get _score =>
-      (_cocktail.ingredients.length - _revealedCount + 1).clamp(0, _cocktail.ingredients.length);
-
-  @override
-  void dispose() {
-    _controller.dispose();
-    super.dispose();
+    final text = _fieldController?.text.trim() ?? '';
+    if (text.isEmpty) return;
+    ref.read(game1Provider.notifier).validate(text);
+    final s = ref.read(game1Provider).valueOrNull;
+    if (s != null && !s.gameOver) _fieldController?.clear();
   }
 
   @override
   Widget build(BuildContext context) {
     final currentIndex = ref.watch(navIndexProvider);
+    final gameAsync = ref.watch(game1Provider);
 
-    return Scaffold(
-      extendBody: true,
-      bottomNavigationBar: BottomNavBar(
-        currentIndex: currentIndex,
-        onTap: (i) {
-          ref.read(navIndexProvider.notifier).state = i;
-          Navigator.pop(context);
-        },
+    return Container(
+      decoration: const BoxDecoration(
+        gradient: LinearGradient(
+          begin: Alignment.topCenter,
+          end: Alignment.bottomCenter,
+          colors: [AppColors.beigeFonce, AppColors.rose],
+        ),
       ),
-      body: Container(
-        decoration: const BoxDecoration(
-          gradient: LinearGradient(
-            begin: Alignment.topCenter,
-            end: Alignment.bottomCenter,
-            colors: [AppColors.beigeFonce, AppColors.rose],
+      child: Scaffold(
+        backgroundColor: Colors.transparent,
+        extendBody: true,
+        bottomNavigationBar: BottomNavBar(
+          currentIndex: currentIndex,
+          onTap: (i) {
+            ref.read(navIndexProvider.notifier).state = i;
+            Navigator.pop(context);
+          },
+        ),
+        body: SafeArea(
+          child: gameAsync.when(
+            loading: () => const Center(
+              child: CircularProgressIndicator(color: AppColors.noir),
+            ),
+            error: (_, _) => Center(
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  const Text('Something went wrong',
+                      style: TextStyle(color: AppColors.noir)),
+                  const SizedBox(height: 12),
+                  ElevatedButton(
+                    onPressed: () => ref.invalidate(game1Provider),
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: AppColors.rose,
+                      foregroundColor: AppColors.white,
+                    ),
+                    child: const Text('Retry'),
+                  ),
+                ],
+              ),
+            ),
+            data: (s) => SingleChildScrollView(
+              padding: const EdgeInsets.only(bottom: 150),
+              child: Column(
+                children: [
+                  Align(
+                    alignment: Alignment.centerLeft,
+                    child: IconButton(
+                      icon: const Icon(Icons.arrow_back_rounded,
+                          color: AppColors.noir),
+                      onPressed: () => Navigator.pop(context),
+                    ),
+                  ),
+                  const SizedBox(height: 24),
+                  const Text(
+                    'Guess My Cocktail !',
+                    style: TextStyle(
+                      fontSize: 24,
+                      fontWeight: FontWeight.bold,
+                      color: AppColors.noir,
+                    ),
+                  ),
+                  const SizedBox(height: 4),
+                  const Padding(
+                    padding: EdgeInsets.symmetric(horizontal: 24),
+                    child: Text(
+                      'Guess the cocktail from its revealed ingredients !',
+                      textAlign: TextAlign.center,
+                      style: TextStyle(fontSize: 14, color: AppColors.noir),
+                    ),
+                  ),
+                  const SizedBox(height: 24),
+                  Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 24),
+                    child: LayoutBuilder(
+                      builder: (context, constraints) {
+                        const spacing = 8.0;
+                        const maxPerRow = 4;
+                        final count = s.cocktail.ingredients.length;
+                        final perRow = count <= maxPerRow ? count : maxPerRow;
+                        final cardWidth = (constraints.maxWidth - spacing * (perRow - 1)) / perRow;
+                        return Wrap(
+                          spacing: spacing,
+                          runSpacing: spacing,
+                          alignment: WrapAlignment.center,
+                          children: List.generate(count, (i) {
+                            final isRevealed = i < s.revealedCount;
+                            return SizedBox(
+                              width: cardWidth,
+                              child: AnimatedSwitcher(
+                                duration: const Duration(milliseconds: 400),
+                                child: isRevealed
+                                    ? _IngredientCard(
+                                        key: ValueKey('revealed_$i'),
+                                        text: s.cocktail.ingredients[i].name,
+                                      )
+                                    : _HiddenCard(key: ValueKey('hidden_$i')),
+                              ),
+                            );
+                          }),
+                        );
+                      },
+                    ),
+                  ),
+                  const SizedBox(height: 12),
+                  Text(
+                    '${s.cocktail.ingredients.length - s.revealedCount} hint(s) remaining',
+                    style: TextStyle(
+                      fontSize: 13,
+                      color: AppColors.noir.withValues(alpha: 0.6),
+                      fontStyle: FontStyle.italic,
+                    ),
+                  ),
+                  const SizedBox(height: 24),
+                  if (s.gameOver)
+                    GameResultCard(
+                      won: s.won,
+                      title: s.won ? 'Well done!' : 'Too bad...',
+                      detail: s.won
+                          ? 'It was indeed ${s.cocktail.name}!'
+                          : 'It was: ${s.cocktail.name}\n${gameGage(s.cocktail.name)}',
+                      scoreWidget: s.won
+                          ? buildStarScore(
+                              s.score, s.cocktail.ingredients.length)
+                          : null,
+                      onPlayAgain: () {
+                        _fieldController?.clear();
+                        ref.read(game1Provider.notifier).restart();
+                      },
+                    ),
+                  if (!s.gameOver) ...[
+                    Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 24),
+                      child: Autocomplete<String>(
+                        optionsBuilder: (textValue) async {
+                          final q = textValue.text.trim();
+                          if (q.isEmpty) return const [];
+                          try {
+                            final letter = q[0].toUpperCase();
+                            final names = await ref.read(
+                                cocktailNamesByLetterProvider(letter).future);
+                            return names
+                                .where((n) => n
+                                    .toLowerCase()
+                                    .contains(q.toLowerCase()))
+                                .take(8);
+                          } catch (_) {
+                            return const [];
+                          }
+                        },
+                        onSelected: (_) => _onValidate(),
+                        optionsViewBuilder: _optionsView,
+                        fieldViewBuilder:
+                            (ctx, controller, focusNode, onSubmit) {
+                          _fieldController = controller;
+                          return TextField(
+                            controller: controller,
+                            focusNode: focusNode,
+                            textAlign: TextAlign.center,
+                            style: const TextStyle(
+                              fontSize: 16,
+                              fontWeight: FontWeight.bold,
+                              color: AppColors.noir,
+                            ),
+                            onSubmitted: (_) => _onValidate(),
+                            decoration: _inputDecoration(
+                                'Type a cocktail name...'),
+                          );
+                        },
+                      ),
+                    ),
+                    const SizedBox(height: 32),
+                    _ActionButton(label: 'VALIDATE', onTap: _onValidate),
+                  ],
+                ],
+              ),
+            ),
           ),
         ),
-        child: SafeArea(
-          child: SingleChildScrollView(
-            padding: const EdgeInsets.only(bottom: 350),
-            child: Column(
-              children: [
-                Align(
-                  alignment: Alignment.centerLeft,
-                  child: IconButton(
-                    icon: const Icon(Icons.arrow_back_ios, color: AppColors.noir),
-                    onPressed: () => Navigator.pop(context),
-                  ),
+      ),
+    );
+  }
+}
+
+Widget _optionsView(
+  BuildContext context,
+  AutocompleteOnSelected<String> onSelected,
+  Iterable<String> options,
+) {
+  return Align(
+    alignment: Alignment.topLeft,
+    child: Material(
+      elevation: 8,
+      borderRadius: BorderRadius.circular(12),
+      color: AppColors.beige,
+      child: ListView.separated(
+        padding: EdgeInsets.zero,
+        shrinkWrap: true,
+        itemCount: options.length > 6 ? 6 : options.length,
+        separatorBuilder: (_, _) =>
+            const Divider(height: 1, color: AppColors.beigeFonce),
+        itemBuilder: (_, i) {
+          final option = options.elementAt(i);
+          return InkWell(
+            onTap: () => onSelected(option),
+            borderRadius: BorderRadius.vertical(
+              top: i == 0 ? const Radius.circular(12) : Radius.zero,
+              bottom: i == options.length - 1
+                  ? const Radius.circular(12)
+                  : Radius.zero,
+            ),
+            child: Padding(
+              padding: const EdgeInsets.symmetric(
+                  horizontal: 16, vertical: 12),
+              child: Text(
+                option,
+                style: const TextStyle(
+                  color: AppColors.noir,
+                  fontWeight: FontWeight.w600,
+                  fontSize: 14,
                 ),
+              ),
+            ),
+          );
+        },
+      ),
+    ),
+  );
+}
 
-                const SizedBox(height: 170),
+InputDecoration _inputDecoration(String hint) => InputDecoration(
+      hintText: hint,
+      hintStyle: TextStyle(color: AppColors.noir.withValues(alpha: 0.4)),
+      filled: true,
+      fillColor: AppColors.beige,
+      contentPadding:
+          const EdgeInsets.symmetric(horizontal: 20, vertical: 14),
+      border: OutlineInputBorder(
+        borderRadius: BorderRadius.circular(14),
+        borderSide: const BorderSide(color: AppColors.rose, width: 2),
+      ),
+      enabledBorder: OutlineInputBorder(
+        borderRadius: BorderRadius.circular(14),
+        borderSide: const BorderSide(color: AppColors.rose, width: 2),
+      ),
+      focusedBorder: OutlineInputBorder(
+        borderRadius: BorderRadius.circular(14),
+        borderSide: const BorderSide(color: AppColors.noir, width: 2),
+      ),
+    );
 
-                const Text(
-                  'Guess My Cocktail !',
-                  style: TextStyle(
-                    fontSize: 24,
-                    fontWeight: FontWeight.bold,
-                    color: AppColors.noir,
-                  ),
-                ),
+class _ActionButton extends StatelessWidget {
+  final String label;
+  final VoidCallback onTap;
+  const _ActionButton({required this.label, required this.onTap});
 
-                const SizedBox(height: 4),
-                const Padding(
-                  padding: EdgeInsets.symmetric(horizontal: 24),
-                  child: Text(
-                    'Guess the cocktail from its ingredients !',
-                    textAlign: TextAlign.center,
-                    style: TextStyle(fontSize: 14, color: AppColors.noir),
-                  ),
-                ),
-
-                const SizedBox(height: 24),
-
-                Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 24),
-                  child: Row(
-                    children: List.generate(_cocktail.ingredients.length, (i) {
-                      final isRevealed = i < _revealedCount;
-                      return Expanded(
-                        child: Padding(
-                          padding: EdgeInsets.only(
-                            right: i < _cocktail.ingredients.length - 1 ? 8 : 0,
-                          ),
-                          child: AnimatedSwitcher(
-                            duration: const Duration(milliseconds: 400),
-                            child: isRevealed
-                                ? _IngredientCard(
-                              key: ValueKey('revealed_$i'),
-                              text: _cocktail.ingredients[i],
-                            )
-                                : _HiddenCard(key: ValueKey('hidden_$i')),
-                          ),
-                        ),
-                      );
-                    }),
-                  ),
-                ),
-
-                const SizedBox(height: 12),
-
-                Text(
-                  '${_cocktail.ingredients.length - _revealedCount} hint(s) remaining',
-                  style: TextStyle(
-                    fontSize: 13,
-                    color: AppColors.noir.withOpacity(0.6),
-                    fontStyle: FontStyle.italic,
-                  ),
-                ),
-
-                const SizedBox(height: 24),
-
-                if (_gameOver)
-                  Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 24),
-                    child: Container(
-                      width: double.infinity,
-                      padding: const EdgeInsets.symmetric(vertical: 16, horizontal: 20),
-                      decoration: BoxDecoration(
-                        color: _won
-                            ? AppColors.rose.withOpacity(0.25)
-                            : Colors.black.withOpacity(0.08),
-                        borderRadius: BorderRadius.circular(16),
-                        border: Border.all(
-                          color: _won ? AppColors.rose : AppColors.noir,
-                          width: 2,
-                        ),
-                      ),
-                      child: Column(
-                        children: [
-                          Text(
-                            _won ? 'Well done !' : 'It was ${_cocktail.nom} !',
-                            style: const TextStyle(
-                              fontSize: 18,
-                              fontWeight: FontWeight.bold,
-                              color: AppColors.noir,
-                            ),
-                            textAlign: TextAlign.center,
-                          ),
-                          if (_won) ...[
-                            const SizedBox(height: 4),
-                            Text(
-                              'Score : $_score / ${_cocktail.ingredients.length}',
-                              style: const TextStyle(
-                                fontSize: 15,
-                                color: AppColors.noir,
-                              ),
-                            ),
-                          ],
-                        ],
-                      ),
-                    ),
-                  ),
-
-                if (!_gameOver) ...[
-                  Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 24),
-                    child: TextField(
-                      controller: _controller,
-                      textAlign: TextAlign.center,
-                      style: const TextStyle(
-                        fontSize: 16,
-                        fontWeight: FontWeight.bold,
-                        color: AppColors.noir,
-                      ),
-                      onSubmitted: (_) => _onValidate(),
-                      decoration: InputDecoration(
-                        hintText: 'Type the cocktail name...',
-                        hintStyle: TextStyle(color: AppColors.noir.withOpacity(0.4)),
-                        filled: true,
-                        fillColor: AppColors.beige,
-                        contentPadding: const EdgeInsets.symmetric(
-                          horizontal: 20,
-                          vertical: 14,
-                        ),
-                        border: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(14),
-                          borderSide: BorderSide(color: AppColors.rose, width: 2),
-                        ),
-                        enabledBorder: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(14),
-                          borderSide: BorderSide(color: AppColors.rose, width: 2),
-                        ),
-                        focusedBorder: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(14),
-                          borderSide: BorderSide(color: AppColors.noir, width: 2),
-                        ),
-                      ),
-                    ),
-                  ),
-
-                  const SizedBox(height: 32),
-
-                  Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 24),
-                    child: GestureDetector(
-                      onTap: _onValidate,
-                      child: Container(
-                        width: double.infinity,
-                        padding: const EdgeInsets.symmetric(vertical: 18),
-                        decoration: BoxDecoration(
-                          color: AppColors.beige,
-                          borderRadius: BorderRadius.circular(20),
-                          border: Border.all(color: AppColors.noir, width: 2),
-                          boxShadow: const [
-                            BoxShadow(color: Colors.black26, blurRadius: 10),
-                          ],
-                        ),
-                        child: const Center(
-                          child: Text(
-                            'VALIDATE',
-                            style: TextStyle(
-                              fontSize: 18,
-                              fontWeight: FontWeight.bold,
-                              color: AppColors.noir,
-                            ),
-                          ),
-                        ),
-                      ),
-                    ),
-                  ),
-                ],
-
-                if (_gameOver) ...[
-                  const SizedBox(height: 24),
-
-                  Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 24),
-                    child: GestureDetector(
-                      onTap: _onRestart,
-                      child: Container(
-                        width: double.infinity,
-                        padding: const EdgeInsets.symmetric(vertical: 18),
-                        decoration: BoxDecoration(
-                          color: AppColors.beige,
-                          borderRadius: BorderRadius.circular(20),
-                          border: Border.all(color: AppColors.noir, width: 2),
-                          boxShadow: const [
-                            BoxShadow(color: Colors.black26, blurRadius: 10),
-                          ],
-                        ),
-                        child: const Center(
-                          child: Text(
-                            'PLAY AGAIN',
-                            style: TextStyle(
-                              fontSize: 18,
-                              fontWeight: FontWeight.bold,
-                              color: AppColors.noir,
-                            ),
-                          ),
-                        ),
-                      ),
-                    ),
-                  ),
-                ],
-              ],
+  @override
+  Widget build(BuildContext context) {
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 24),
+      child: GestureDetector(
+        onTap: onTap,
+        child: Container(
+          width: double.infinity,
+          padding: const EdgeInsets.symmetric(vertical: 18),
+          decoration: BoxDecoration(
+            color: AppColors.beige,
+            borderRadius: BorderRadius.circular(20),
+            border: Border.all(color: AppColors.rose, width: 2),
+            boxShadow: const [
+              BoxShadow(color: Colors.black26, blurRadius: 10),
+            ],
+          ),
+          child: Center(
+            child: Text(
+              label,
+              style: const TextStyle(
+                fontSize: 18,
+                fontWeight: FontWeight.bold,
+                color: AppColors.noir,
+              ),
             ),
           ),
         ),
@@ -355,7 +323,6 @@ class _GuessMyCocktailScreenState extends ConsumerState<GuessMyCocktailScreen> {
 
 class _IngredientCard extends StatelessWidget {
   final String text;
-
   const _IngredientCard({super.key, required this.text});
 
   @override
@@ -365,10 +332,8 @@ class _IngredientCard extends StatelessWidget {
       decoration: BoxDecoration(
         color: AppColors.beige,
         borderRadius: BorderRadius.circular(14),
-        border: Border.all(color: AppColors.rose, width: 2),
-        boxShadow: const [
-          BoxShadow(color: Colors.black12, blurRadius: 6),
-        ],
+        border: Border.all(color: AppColors.noir, width: 1.5),
+        boxShadow: const [BoxShadow(color: Colors.black26, blurRadius: 6)],
       ),
       child: Center(
         child: Padding(
@@ -376,7 +341,7 @@ class _IngredientCard extends StatelessWidget {
           child: Text(
             text,
             style: const TextStyle(
-              fontSize: 11,
+              fontSize: 14,
               fontWeight: FontWeight.bold,
               color: AppColors.noir,
             ),
@@ -396,12 +361,10 @@ class _HiddenCard extends StatelessWidget {
     return Container(
       height: 80,
       decoration: BoxDecoration(
-        color: AppColors.rose.withOpacity(0.3),
+        color: AppColors.noir.withValues(alpha: 0.15),
         borderRadius: BorderRadius.circular(14),
-        border: Border.all(color: AppColors.rose, width: 2),
-        boxShadow: const [
-          BoxShadow(color: Colors.black12, blurRadius: 6),
-        ],
+        border: Border.all(color: AppColors.noir, width: 1.5),
+        boxShadow: const [BoxShadow(color: Colors.black26, blurRadius: 6)],
       ),
       child: const Center(
         child: Text(
@@ -409,7 +372,7 @@ class _HiddenCard extends StatelessWidget {
           style: TextStyle(
             fontSize: 24,
             fontWeight: FontWeight.bold,
-            color: AppColors.rose,
+            color: AppColors.noir,
           ),
         ),
       ),
