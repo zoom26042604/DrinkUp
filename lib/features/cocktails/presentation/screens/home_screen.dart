@@ -1,12 +1,14 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../../../core/constants/colors.dart';
+import '../providers/nav_provider.dart';
 import '../widgets/speech_bubble.dart';
 
-class HomeScreen extends StatelessWidget {
+class HomeScreen extends ConsumerWidget {
   const HomeScreen({super.key});
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     return Container(
       decoration: const BoxDecoration(
         gradient: LinearGradient(
@@ -78,13 +80,16 @@ class HomeScreen extends StatelessWidget {
                         BoxShadow(color: Colors.black26, blurRadius: 10),
                       ],
                     ),
-                    child: const Center(
-                      child: Text(
-                        'START YOUR PARTY',
-                        style: TextStyle(
-                          fontSize: 18,
-                          fontWeight: FontWeight.bold,
-                          color: AppColors.noir,
+                    child: GestureDetector(
+                      onTap: () => ref.read(navIndexProvider.notifier).state = 1,
+                      child: const Center(
+                        child: Text(
+                          'START YOUR PARTY',
+                          style: TextStyle(
+                            fontSize: 18,
+                            fontWeight: FontWeight.bold,
+                            color: AppColors.noir,
+                          ),
                         ),
                       ),
                     ),
