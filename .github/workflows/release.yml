@@ -42,11 +42,14 @@ jobs:
       - name: Install dependencies
         run: flutter pub get
 
-      - name: Build release APK
-        run: flutter build apk --release
+      - name: Build release APKs
+        run: flutter build apk --release --split-per-abi
 
-      - name: Rename APK
-        run: mv build/app/outputs/flutter-apk/app-release.apk build/app/outputs/flutter-apk/DrinkUp-${{ github.ref_name }}.apk
+      - name: Rename APKs
+        run: |
+          mv build/app/outputs/flutter-apk/app-arm64-v8a-release.apk build/app/outputs/flutter-apk/DrinkUp-${{ github.ref_name }}-arm64.apk
+          mv build/app/outputs/flutter-apk/app-armeabi-v7a-release.apk build/app/outputs/flutter-apk/DrinkUp-${{ github.ref_name }}-arm32.apk
+          mv build/app/outputs/flutter-apk/app-x86_64-release.apk build/app/outputs/flutter-apk/DrinkUp-${{ github.ref_name }}-x86_64.apk
 
       - name: Create GitHub Release
         uses: softprops/action-gh-release@v2
@@ -55,10 +58,18 @@ jobs:
           body: |
             ## DrinkUp ${{ github.ref_name }}
 
+            ### Quel APK choisir ?
+            - **arm64** → téléphones récents (2018+), le bon dans 99% des cas
+            - **arm32** → vieux téléphones
+            - **x86_64** → émulateurs
+
             ### Installation
-            1. Télécharge le fichier `.apk` ci-dessous
+            1. Télécharge le fichier `.apk` correspondant à ton téléphone (arm64 si tu sais pas)
             2. Sur ton Android, autorise les sources inconnues dans les paramètres
             3. Lance le fichier et installe l'app
-          files: build/app/outputs/flutter-apk/DrinkUp-${{ github.ref_name }}.apk
+          files: |
+            build/app/outputs/flutter-apk/DrinkUp-${{ github.ref_name }}-arm64.apk
+            build/app/outputs/flutter-apk/DrinkUp-${{ github.ref_name }}-arm32.apk
+            build/app/outputs/flutter-apk/DrinkUp-${{ github.ref_name }}-x86_64.apk
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
