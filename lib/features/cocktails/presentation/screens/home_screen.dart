@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../../../core/constants/colors.dart';
+import '../../../../core/utils/responsive.dart';
 import '../providers/nav_provider.dart';
 import '../widgets/speech_bubble.dart';
 
@@ -20,22 +21,22 @@ class HomeScreen extends ConsumerWidget {
       child: SafeArea(
         child: Column(
           children: [
-            const SizedBox(height: 120),
-            const Text(
+            SizedBox(height: rv(context, phone: 120.0, tablet: 180.0)),
+            Text(
               'Welcome to DrinkUp !',
               style: TextStyle(
-                fontSize: 32,
+                fontSize: rv(context, phone: 32.0, tablet: 48.0),
                 fontWeight: FontWeight.bold,
                 color: AppColors.noir,
               ),
             ),
             const SizedBox(height: 8),
-            const Padding(
-              padding: EdgeInsets.symmetric(horizontal: 24),
+            Padding(
+              padding: EdgeInsets.symmetric(horizontal: rv(context, phone: 24.0, tablet: 80.0)),
               child: Text(
                 'Test your alcohol knowledge with our fun drinking games!',
                 textAlign: TextAlign.center,
-                style: TextStyle(fontSize: 16, color: AppColors.noir),
+                style: TextStyle(fontSize: rv(context, phone: 16.0, tablet: 22.0), color: AppColors.noir),
               ),
             ),
             Expanded(
@@ -60,8 +61,8 @@ class HomeScreen extends ConsumerWidget {
                       transform: Matrix4.identity()..scale(-1.0, 1.0),
                       child: Image.asset(
                         'assets/images/redmascotte.png',
-                        width: 300,
-                        height: 300,
+                        width: rv(context, phone: 300.0, tablet: 460.0),
+                        height: rv(context, phone: 300.0, tablet: 460.0),
                         fit: BoxFit.contain,
                         errorBuilder: (_, __, ___) =>
                         const Text('', style: TextStyle(fontSize: 60)),

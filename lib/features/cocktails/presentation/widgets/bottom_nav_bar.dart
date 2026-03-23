@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import '../../../../core/constants/colors.dart';
+import '../../../../core/utils/responsive.dart';
 
 class BottomNavBar extends StatelessWidget {
   final int currentIndex;
@@ -15,13 +16,13 @@ class BottomNavBar extends StatelessWidget {
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
-          _navItem('assets/images/maison.png', 0),
-          _navItem('assets/images/manette.png', 1),
+          _navItem(context, 'assets/images/maison.png', 0),
+          _navItem(context, 'assets/images/manette.png', 1),
           GestureDetector(
             onTap: () => onTap(0),
             child: Image.asset(
               'assets/images/favicontext.png',
-              height: 40,
+              height: rv(context, phone: 40.0, tablet: 56.0),
               errorBuilder: (_, _, _) => const Icon(
                 Icons.local_bar_rounded,
                 size: 30,
@@ -29,14 +30,14 @@ class BottomNavBar extends StatelessWidget {
               ),
             ),
           ),
-          _navItem('assets/images/etoiles.png', 2),
-          _navItem('assets/images/user.png', 3),
+          _navItem(context, 'assets/images/etoiles.png', 2),
+          _navItem(context, 'assets/images/user.png', 3),
         ],
       ),
     );
   }
 
-  Widget _navItem(String asset, int index) {
+  Widget _navItem(BuildContext context, String asset, int index) {
     final isActive = currentIndex == index;
     return GestureDetector(
       onTap: () => onTap(index),
@@ -51,7 +52,7 @@ class BottomNavBar extends StatelessWidget {
         ),
         child: Image.asset(
           asset,
-          height: 40,
+          height: rv(context, phone: 40.0, tablet: 56.0),
           errorBuilder: (_, _, _) => Icon(
             Icons.circle,
             color: isActive ? AppColors.rose : Colors.black,

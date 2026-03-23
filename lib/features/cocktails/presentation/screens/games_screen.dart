@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import '../../../../core/constants/colors.dart';
+import '../../../../core/utils/responsive.dart';
 import '../widgets/speech_bubble.dart';
 import 'all_games_screen.dart';
 import 'guess_demon_liquid_screen.dart';
@@ -74,12 +75,12 @@ class GamesScreen extends StatelessWidget {
       child: SafeArea(
         child: Column(
           children: [
-            const SizedBox(height: 80),
+            SizedBox(height: rv(context, phone: 80.0, tablet: 120.0)),
             const SizedBox(height: 8),
-            const Text(
+            Text(
               'Ready to be an alcoholic ?',
               style: TextStyle(
-                fontSize: 24,
+                fontSize: rv(context, phone: 24.0, tablet: 36.0),
                 fontWeight: FontWeight.bold,
                 color: AppColors.noir,
               ),
@@ -101,8 +102,8 @@ class GamesScreen extends StatelessWidget {
                     right: -160,
                     child: Image.asset(
                       'assets/images/mascotte1.png',
-                      width: 450,
-                      height: 450,
+                      width: rv(context, phone: 450.0, tablet: 650.0),
+                      height: rv(context, phone: 450.0, tablet: 650.0),
                       fit: BoxFit.contain,
                       errorBuilder: (_, _, _) =>
                       const Text('', style: TextStyle(fontSize: 40)),
@@ -116,9 +117,9 @@ class GamesScreen extends StatelessWidget {
               child: GridView.builder(
                 shrinkWrap: true,
                 physics: const NeverScrollableScrollPhysics(),
-                gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-                  crossAxisCount: 2,
-                  childAspectRatio: 1.4,
+                gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                  crossAxisCount: rv(context, phone: 2, tablet: 4),
+                  childAspectRatio: rv(context, phone: 1.4, tablet: 1.6),
                   crossAxisSpacing: 16,
                   mainAxisSpacing: 16,
                 ),

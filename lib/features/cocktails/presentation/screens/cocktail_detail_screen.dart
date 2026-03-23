@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../../../core/constants/colors.dart';
+import '../../../../core/utils/responsive.dart';
 import '../../domain/entities/cocktail.dart';
 import '../providers/cocktail_providers.dart';
 
@@ -61,12 +62,12 @@ class CocktailDetailScreen extends ConsumerWidget {
                     borderRadius: BorderRadius.circular(20),
                     child: CachedNetworkImage(
                       imageUrl: cocktail.thumbnailUrl,
-                      width: 220,
-                      height: 220,
+                      width: rv(context, phone: 220.0, tablet: 340.0),
+                      height: rv(context, phone: 220.0, tablet: 340.0),
                       fit: BoxFit.cover,
                       placeholder: (_, _) => Container(
-                        width: 220,
-                        height: 220,
+                        width: rv(context, phone: 220.0, tablet: 340.0),
+                        height: rv(context, phone: 220.0, tablet: 340.0),
                         color: AppColors.rose.withValues(alpha: 0.2),
                         child: const Center(
                           child:
@@ -74,8 +75,8 @@ class CocktailDetailScreen extends ConsumerWidget {
                         ),
                       ),
                       errorWidget: (_, _, _) => Container(
-                        width: 220,
-                        height: 220,
+                        width: rv(context, phone: 220.0, tablet: 340.0),
+                        height: rv(context, phone: 220.0, tablet: 340.0),
                         color: AppColors.rose.withValues(alpha: 0.2),
                         child: const Icon(Icons.local_bar,
                             size: 80, color: AppColors.rose),
