@@ -1,0 +1,12 @@
+{
+  "ingredients": [
+    {
+      "idIngredient": "1",
+      "strIngredient": "Vodka",
+      "strDescription": "Vodka is a distilled beverage composed primarily of water and ethanol.",
+      "strType": "Vodka",
+      "strAlcohol": "Yes",
+      "strABV": "40"
+    }
+  ]
+}
