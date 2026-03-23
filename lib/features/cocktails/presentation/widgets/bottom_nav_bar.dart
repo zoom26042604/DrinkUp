@@ -11,7 +11,7 @@ class BottomNavBar extends StatelessWidget {
   Widget build(BuildContext context) {
     return Container(
       color: Colors.transparent,
-      padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 20),
+      padding: const EdgeInsets.symmetric(vertical: 20, horizontal: 20),
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
@@ -20,11 +20,11 @@ class BottomNavBar extends StatelessWidget {
           GestureDetector(
             onTap: () => onTap(0),
             child: Image.asset(
-              'assets/images/favicon.png',
-              height: 80,
+              'assets/images/blackfavicon.png',
+              height: 60,
               errorBuilder: (_, _, _) => const Icon(
                 Icons.local_bar_rounded,
-                size: 40,
+                size: 30,
                 color: AppColors.noir,
               ),
             ),
